@@ -345,6 +345,17 @@ def get_publication_datetime_from_grobid_xml(raw_xml: BeautifulSoup) -> str:
                 return child["when"]
     return ""
 
+def get_doi_from_grobid_xml(raw_xml: BeautifulSoup) -> str:
+    """
+        Finds and returns the doi if it exists
+        :param raw_xml:
+        :return:
+    """
+    idno = raw_xml.find("idno")
+    if idno and idno.has_attr("type") and idno["type"] == "DOI":
+        return idno.text
+    return ""
+
 
 def parse_bib_entry(bib_entry: BeautifulSoup) -> Dict:
     """
@@ -383,6 +394,9 @@ def extract_paper_metadata_from_grobid_xml(tag: bs4.element.Tag) -> Dict:
     paper_metadata = {
         "title": tag.titlestmt.title.text,
         "authors": get_author_data_from_grobid_xml(tag),
-        "year": get_publication_datetime_from_grobid_xml(tag)
+        "year": get_publication_datetime_from_grobid_xml(tag),
+        "identifiers": {
+            "doi": get_doi_from_grobid_xml(tag)
+        }
     }
     return paper_metadata
