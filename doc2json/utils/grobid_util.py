@@ -351,9 +351,9 @@ def get_doi_from_grobid_xml(raw_xml: BeautifulSoup) -> str:
         :param raw_xml:
         :return:
     """
-    idno = raw_xml.find("idno")
-    if idno and idno.has_attr("type") and idno["type"] == "DOI":
-        return idno.text
+    ids = get_other_ids_from_grobid_xml(raw_xml)
+    if "DOI" in ids:
+        return ids["DOI"][0]
     return ""
 
 
